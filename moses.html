@@ -1,0 +1,283 @@
+<!DOCTYPE html><html lang=vi><head><meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<title>Moses: Journey to Freedom</title>
+<link rel=preconnect href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&display=swap" rel=stylesheet>
+<style>
+:root{--ac:#f2b632;--pn:rgba(48,30,14,.94);box-sizing:border-box;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}
+html,body{height:100%;margin:0;background:#1d140c;color:#fff7e6;font:600 18px 'Baloo 2',system-ui,sans-serif;overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none}
+canvas{position:fixed;inset:0;width:100%;height:100%}
+button{border:0;border-radius:16px;background:var(--ac);color:#3a2308;font:inherit;font-weight:800;padding:10px 20px;min-height:54px;min-width:54px;margin:5px;box-shadow:0 4px 0 #a9741a}
+button:active{transform:translateY(3px);box-shadow:none}button:disabled{opacity:.45}
+.pn{position:fixed;background:var(--pn);border-radius:18px;padding:14px;z-index:5}
+.hide{display:none!important}
+#menu,#ld{position:fixed;inset:0;z-index:9;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:linear-gradient(#f0b958,#7a4a1c);padding:20px}
+#menu h1{font-size:clamp(30px,7vw,52px);margin:0 0 12px;line-height:1.05;text-shadow:0 3px #0005}
+#menu small{font-size:.45em;display:block;margin-top:6px}
+#how{max-width:560px;font-size:17px;background:#0004;border-radius:14px;padding:12px}
+#obj{left:10px;top:max(10px,env(safe-area-inset-top));max-width:52vw;white-space:pre-line;font-size:16px}
+#top{position:fixed;right:4px;top:max(4px,env(safe-area-inset-top));z-index:5}
+#js{position:fixed;left:18px;bottom:max(24px,env(safe-area-inset-bottom));width:130px;height:130px;border-radius:50%;background:#fff3;z-index:5;touch-action:none}
+#kn{position:absolute;left:35px;top:35px;width:60px;height:60px;border-radius:50%;background:#fffc}
+#act{position:fixed;right:10px;bottom:max(20px,env(safe-area-inset-bottom));z-index:5;display:flex;flex-direction:column;align-items:flex-end}
+#act button{min-width:92px;min-height:62px}
+#dlg,#qz{left:50%;transform:translateX(-50%);bottom:max(10px,env(safe-area-inset-bottom));width:min(94vw,720px);font-size:20px;z-index:8}
+#qz{top:50%;bottom:auto;transform:translate(-50%,-50%)}
+#qo button{display:block;width:100%;margin:6px 0;text-align:left}
+#av{width:48px;height:48px;border-radius:12px;display:inline-block;vertical-align:middle;margin-right:10px;text-align:center;line-height:48px;color:#fff;font-size:26px;text-shadow:0 2px #0008}
+#dt{min-height:64px;margin:10px 0}
+#bd{touch-action:pan-y;left:0;right:0;bottom:0;border-radius:18px 18px 0 0;max-height:44vh;overflow:auto;text-align:center}#bd button{min-height:48px;min-width:48px;padding:4px 10px;font-size:19px}#bd button.on{outline:4px solid #fff}
+@media(max-width:700px){#obj{font-size:14px}}
+</style></head><body>
+<canvas id=c></canvas>
+<div id=ld><h1>⏳ Loading…</h1></div>
+<div id=menu class=hide>
+<h1>Moses<small data-t="Prince of Egypt: Journey to Freedom|Hoàng tử Ai Cập: Hành trình Tự do"></small></h1>
+<button id=bs data-t="▶ Start|▶ Bắt đầu"></button>
+<button id=bc class=hide data-t="⏩ Continue|⏩ Tiếp tục"></button>
+<button id=bh data-t="❓ How to Play|❓ Cách chơi"></button>
+<div><button id=bl2></button><button id=bn2></button></div>
+<p id=how class=hide data-t="Phone: left joystick to move, JUMP / TALK / BUILD buttons on the right, drag to turn the camera. Laptop: WASD or arrows to move, Space to jump, E to talk, B to build, drag the mouse to look.|Điện thoại: joystick trái để di chuyển, nút NHẢY / NÓI / XÂY bên phải, kéo ngón tay để xoay camera. Laptop: WASD hoặc mũi tên để đi, Space nhảy, E nói chuyện, B xây, kéo chuột để xoay."></p>
+<small style="max-width:560px;font-size:14px" data-t="Bible facts follow Exodus and Bible App for Kids / YouVersion. Camp building and background characters are creative and not stated in the Bible.|Nội dung Kinh Thánh theo sách Xuất Ê-díp-tô Ký và Bible App for Kids / YouVersion. Hoạt động xây trại và nhân vật nền là sáng tạo, không được nói rõ trong Kinh Thánh."></small>
+</div>
+<div id=hud class=hide>
+<div id=obj class=pn></div>
+<div id=top><button id=sb>⭐0</button><button id=bn></button><button id=bl></button><button id=bf>⛶</button><button id=bp>⏸</button></div>
+<div id=js><i id=kn></i></div>
+<div id=act><button id=bt class=hide></button><button id=br class=hide></button><button id=bj data-t="⬆ Jump|⬆ Nhảy"></button></div>
+</div>
+<div id=dlg class="pn hide"><span id=av></span><b id=dn></b><p id=dt></p><button id=dx></button></div>
+<div id=bd class="pn hide"></div>
+<div id=qz class="pn hide"><b id=qq></b><div id=qo></div><p id=qe></p><button id=qn class=hide></button></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>window.THREE||document.write('<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"><\/script>')</script>
+<script>
+(()=>{
+const $=i=>document.getElementById(i);
+if(!window.THREE){$('ld').innerHTML='<h2>Cần Internet để tải Three.js / Internet needed to load Three.js</h2>';return}
+let lang=(navigator.language||'vi').slice(0,2)=='en'?0:1,snd=1,pause=0,ch=0,stars=0,st=0,blocks=0,busy=0,play=0,near=null,on=0,JP=0;
+const T=s=>s.split('|')[lang];
+
+/* ===== CAST: [skin,hair,top,bottom,hatKind,hatColor,scale,name,generic line] hat: 1 wrap 2 nemes 3 helmet 4 veil 5 crown 6 band ===== */
+const A='d9a07a',B='b9825a',D='f0c4a0';
+const C={
+moses:[A,'5a3a22','e8d9b8','c9a97a',1,'a88458',1,'Moses|Moses',''],
+mosesT:[A,'5a3a22','f4f4ec','e8d9b8',6,'e8e0d0',.85,'Young Moses|Moses thiếu niên',''],
+babyM:[A,'5a3a22','f4f4ec','f4f4ec',0,0,.32,'Baby Moses|Em bé Moses','Waa! Waa!|Oa! Oa!'],
+miriam:[B,'151515','5fd3c4','f4f4ec',6,'3fb8a8',.8,'Miriam|Miriam','Let’s go!|Đi thôi!'],
+aaron:[A,'1c1c1c','7a5636','7a5636',0,0,1.08,'Aaron|Aaron','God is with us!|Chúa ở cùng ta!'],
+pharaoh:[A,'3b2a1a','f4eccd','f4eccd',2,'3a6ea8',1.1,'Pharaoh|Pharaoh','Hmm… I am the king.|Hừm… Ta là vua.'],
+princess:[D,'e8e8e8','f4f4f4','a8e0e0',5,'f4f4f4',.95,'Princess|Công chúa','Hello, Moses!|Chào Moses!'],
+jochebed:[B,'4a2e1c','f2a7b8','f2a7b8',4,'f2b8c6',.95,'Jochebed|Jochebed','God keeps us safe.|Chúa giữ gìn chúng ta.'],
+amram:[B,'8a5a3a','8a6a45','8a6a45',0,0,1.05,'Amram|Amram','Be brave, my son.|Hãy can đảm, con trai.'],
+jethro:[A,'e8e8e8','6a4a30','f4f4f4',1,'f4f4f4',1.05,'Jethro|Jethro','Peace be with you.|Bình an cho con.'],
+zipporah:[B,'6a3a22','e8643a','e8643a',0,0,.95,'Zipporah|Zipporah','Welcome!|Chào mừng!'],
+israelM:[A,'4a3020','8a6a45','6a4a30',1,'b8955a',1,'Israelite man|Người Israel','We pray for freedom.|Chúng tôi cầu xin tự do.'],
+israelF:[B,'5a3a22','a9bfe0','a9bfe0',4,'b8c8ec',.95,'Israelite woman|Phụ nữ Israel','God will help us.|Chúa sẽ giúp chúng ta.'],
+kid:[B,'2a1a12','6ac4c0','6ac4c0',0,0,.62,'Israelite child|Trẻ em Israel','Are we free yet?|Mình tự do chưa?'],
+egyptM:[A,'222','e8c040','f4eccd',2,'e8c040',1,'Egyptian man|Người Ai Cập','Good day!|Chào ngày mới!'],
+egyptF:[B,'111','f4f4ec','f4f4ec',6,'e8c040',.95,'Egyptian lady|Cô gái Ai Cập','The Nile is lovely.|Sông Nile đẹp quá.'],
+worker:[D,'6a3a22','d9c9a0','d9c9a0',0,0,.95,'Palace worker|Người làm cung điện','I must sweep the hall.|Tôi phải quét sảnh.'],
+guard:[A,'3a2a1a','f4f4ec','f4f4ec',3,'9a9a98',1.05,'Guard|Lính gác','All is quiet here.|Ở đây yên ắng.'],
+captain:[A,'3a2a1a','e8c040','f4f4ec',2,'3a6ea8',1.3,'Guard captain|Đội trưởng lính','Stay in line, please.|Xin giữ hàng nhé.'],
+shepherd:[A,'3a2a1a','5a3d28','5a3d28',1,'7a5a3a',1,'Midian shepherd|Người chăn cừu','My sheep are hungry.|Cừu của tôi đói rồi.'],
+midF:[B,'5a3a22','c8603a','c8603a',4,'d07a50',.95,'Midian woman|Người dân Midian','Fresh water here!|Có nước ngọt đây!'],
+elder:[A,'cfcfcf','7a5636','7a5636',1,'e8e0d0',1,'Elder|Trưởng lão Israel','Trust in God.|Hãy tin cậy Chúa.'],
+oldW:[B,'aaaaaa','4a78b0','4a78b0',4,'cfcfcf',.9,'Old woman|Bà lão Israel','Take some water, dear.|Uống chút nước nhé con.'],
+steward:[A,'222','f4f4ec','f4f4ec',1,'f4f4ec',1,'Palace steward|Quản gia cung điện','Dinner is served!|Dọn tiệc rồi!'],
+kidE:[B,'111','f4ecd0','f4ecd0',0,0,.62,'Egyptian child|Trẻ Ai Cập','Want to play?|Chơi không?'],
+merchant:[A,'3a2a1a','f4f4f4','4a8ad0',0,0,1,'Merchant|Người bán hàng','Fresh fruit for sale!|Trái cây tươi đây!'],
+teller:[A,'6a4020','7a40a0','3fa070',0,0,1,'Storyteller|Người dẫn chuyện','Listen to the story…|Hãy nghe chuyện…']};
+
+/* ===== CHAPTERS: o=obby, k=build spec index, s=star pos, pc=player model, e=props (p palms,y pyramids,c columns,w sea walls,m mountains,b bush,t tents,n river). Bible facts follow Exodus; build activities and background NPCs are creative (not stated in the Bible) ===== */
+const CH=[
+{t:'Baby Moses on the Nile|Em bé Moses bên sông Nile',sky:'8fd3f0',gr:'d9c27c',pc:'miriam',s:[-5,-8],e:'pn',r:'Basket 🧺|Giỏ 🧺',
+n:[['jochebed',3,1,'I hid baby Moses for three months. Now I will put him in a basket by the river. Miriam, watch over him from far away.|Mẹ giấu Moses ba tháng. Giờ mẹ đặt con trong giỏ bên sông. Miriam, hãy canh chừng em từ xa nhé.'],['princess',-6,-9,'A baby is crying in the basket! I feel sorry for him. He is one of the Hebrew babies.|Có em bé khóc trong giỏ! Ta thương em. Đó là một bé Hê-bơ-rơ.'],['worker',-5,-12,'Our princess came down to the river to bathe.|Công chúa của chúng tôi xuống sông tắm.'],['babyM',-9,-8]],
+q:[['Who found baby Moses in the river?|Ai đã tìm thấy em bé Moses ở sông?',['Pharaoh’s daughter|Con gái Pharaoh','A soldier|Một người lính','A fisherman|Một người đánh cá'],0,'She felt sorry for him and took him as her own son.|Công chúa thương em bé và nhận làm con.'],
+['Who watched over baby Moses from far away?|Ai canh chừng em bé Moses từ xa?',['Aaron|Aaron','Miriam|Miriam','Jethro|Jethro'],1,'His big sister Miriam kept watch.|Chị Miriam đã canh chừng em.']]},
+{t:'Moses in the Palace|Moses trong hoàng cung',sky:'a9defa',gr:'e4cf94',pc:'mosesT',s:[-7,-9],e:'cyp',r:'Crown scroll 📜|Cuộn giấy 📜',
+n:[['princess',3,-3,'I named you Moses, because I drew you out of the water. You grew up in my palace, yet you care about your own people.|Ta đặt tên con là Moses vì ta đã kéo con lên khỏi nước. Con lớn lên trong cung, nhưng vẫn thương dân của mình.'],['israelM',-6,-7,'The work is very hard for our people.|Công việc của dân chúng tôi rất nặng nhọc.'],['pharaoh',-4,-3],['steward',5,-5],['worker',-7,-2],['egyptF',7,-2],['guard',0,-12],['merchant',7,-8]],
+q:[['Where did Moses grow up?|Moses lớn lên ở đâu?',['In Pharaoh’s palace|Trong cung Pharaoh','In a desert tent|Trong lều sa mạc','On a ship|Trên một con tàu'],0,'Pharaoh’s daughter raised him as her son.|Con gái Pharaoh nuôi Moses như con mình.']]},
+{t:'Journey to Midian|Đến xứ Midian',sky:'ffd89a',gr:'e6b96a',w:'d9a85c',o:1,e:'pm',r:'Staff 🐑|Gậy chiên 🐑',
+n:[['jethro',8,-3,'Welcome, Moses! You helped my daughters at the well, so come and stay with us.|Chào Moses! Con đã giúp các con gái ta ở giếng nước, hãy ở lại với chúng ta.'],['shepherd',-8,-7,'Moses left Egypt because Pharaoh was angry with him.|Moses rời Ai Cập vì Pharaoh giận ông.'],['zipporah',-8,-2],['midF',8,-8]],
+q:[['What did Moses do in Midian?|Moses làm gì ở Midian?',['Cared for sheep|Chăn chiên','Built ships|Đóng tàu','Sold fruit|Bán trái cây'],0,'Moses looked after Jethro’s sheep.|Moses chăn bầy chiên của Jethro.']]},
+{t:'The Burning Bush|Bụi gai cháy',sky:'ffc27a',gr:'d6a85c',s:[0,-6],e:'b',r:'Sandals 👡|Dép 👡',
+n:[['teller',3,-3,'Look! A bush is burning, but it does not burn up! God calls: Moses, Moses!|Nhìn kìa! Bụi gai cháy mà không tàn! Chúa gọi: Moses, Moses!'],['shepherd',-4,-3,'Moses led Jethro’s sheep to the mountain of God.|Moses dẫn bầy chiên của Jethro đến núi của Đức Chúa Trời.']],
+q:[['How did God call Moses?|Chúa gọi Moses qua điều gì?',['A burning bush|Bụi gai cháy','A storm|Cơn bão','A river|Dòng sông'],0,'God spoke from a bush that burned but did not burn up.|Chúa phán từ bụi gai cháy mà không tàn.'],
+['What did God ask Moses to take off?|Chúa bảo Moses cởi gì ra?',['His hat|Mũ','His sandals|Dép','His cloak|Áo choàng'],1,'God said the ground was holy because He was there.|Chúa phán đó là đất thánh vì Ngài ở đó.']]},
+{t:'Back to Pharaoh|Trở về gặp Pharaoh',sky:'b8e4ff',gr:'e4cf94',s:[3,-10],gd:2,e:'cy',r:'Scroll 📜|Cuộn giấy 📜',
+n:[['aaron',3,-3,'God told me to meet you, Moses. Together we will speak to Pharaoh.|Chúa bảo anh đến gặp em, Moses. Ta cùng nói với Pharaoh.'],['pharaoh',-3,-9,'I do not know your God, and I will not let Israel go.|Ta không biết Chúa của các ngươi, và ta sẽ không cho Israel đi.'],['captain',-5,-5],['guard',5,-6],['steward',-7,-2]],
+q:[['Who went with Moses to talk to Pharaoh?|Ai cùng Moses đến nói với Pharaoh?',['Aaron|Aaron','Amram|Amram','Zipporah|Zipporah'],0,'God sent Aaron, Moses’ brother, to speak for him.|Chúa cho Aaron, anh của Moses, nói thay ông.']]},
+{t:'Let My People Go|Hãy để dân ta đi',sky:'d9c8a8',gr:'d6b87a',s:[0,-10],e:'cy',r:'Doorpost 🏠|Cột cửa 🏠',
+n:[['aaron',3,-3,'God sent ten wonders: the Nile water changed, frogs came, and more. But Pharaoh’s heart stayed hard.|Chúa gửi mười dấu lạ: nước sông Nile đổi khác, ếch nhái kéo đến… Nhưng lòng Pharaoh vẫn cứng.'],['pharaoh',-3,-6,'I will not let your people go.|Ta sẽ không cho dân các ngươi đi.'],['elder',6,-6,'God told us to mark our doors with a lamb’s blood. God protected us, and then Pharaoh let us go.|Chúa bảo ta bôi huyết chiên con lên cửa. Chúa che chở ta, rồi Pharaoh cho ta đi.'],['egyptM',-6,-3],['israelM',7,-3]],
+q:[['What did Moses say to Pharaoh?|Moses nói gì với Pharaoh?',['“Let my people go!”|“Hãy để dân ta đi!”','“Give me gold!”|“Hãy cho ta vàng!”','“Build a pyramid!”|“Hãy xây kim tự tháp!”'],0,'God said: let My people go, so they can worship Me.|Chúa phán: hãy để dân Ta đi để thờ phượng Ta.'],
+['How many plagues did God send?|Chúa đã gửi bao nhiêu tai ương?',['Three|Ba','Seven|Bảy','Ten|Mười'],2,'God sent ten plagues, but Pharaoh’s heart stayed hard.|Chúa gửi mười tai ương, nhưng lòng Pharaoh vẫn cứng.']]},
+{t:'The Exodus|Xuất Ai Cập',sky:'ffe0a8',gr:'e6c07a',w:'d9a85c',o:1,k:0,e:'pt',r:'Cloud ☁️|Trụ mây ☁️',
+n:[['elder',8,-3,'Pharaoh finally let us go! God leads us with a pillar of cloud by day and a pillar of fire by night.|Pharaoh cho ta đi rồi! Chúa dẫn ta bằng trụ mây ban ngày và trụ lửa ban đêm.'],['israelM',-8,-2],['israelF',8,-8],['kid',-8,-8],['oldW',8,2],['jochebed',-8,2]],
+q:[['What did God use to lead the people by day?|Chúa dùng gì dẫn dân đi ban ngày?',['A pillar of cloud|Trụ mây','A big star|Ngôi sao lớn','A flying bird|Con chim bay'],0,'The Lord went ahead of them in a pillar of cloud by day and fire by night.|Chúa đi trước dân trong trụ mây ban ngày và trụ lửa ban đêm.']]},
+{t:'Crossing the Red Sea|Qua Biển Đỏ',sky:'7ec8ee',gr:'e8d49a',k:1,s:[0,-40],e:'w',r:'Wave 🌊|Sóng 🌊',
+n:[['miriam',8,-1,'We are camped by the sea, and Pharaoh’s army is coming! Don’t be afraid. God will make a way!|Ta đang đóng trại bên biển và quân Pharaoh đang đến! Đừng sợ, Chúa sẽ mở đường!'],['aaron',-8,-1],['israelM',8,3],['kid',-8,3]],
+q:[['Who followed the Israelites to the sea?|Ai đuổi theo dân Israel đến biển?',['Pharaoh’s army|Quân của Pharaoh','Midian shepherds|Người chăn chiên Midian','The elders|Các trưởng lão'],0,'Pharaoh changed his mind and followed them.|Pharaoh đổi ý và đuổi theo họ.'],
+['What did God do at the Red Sea?|Chúa làm gì ở Biển Đỏ?',['Made a path through it|Mở lối đi giữa biển','Built a bridge|Bắc một cây cầu','Dried the whole world|Làm khô cả thế giới'],0,'God made a way through the water.|Chúa mở đường qua nước.'],
+['What did Moses hold out over the sea?|Moses giơ gì ra trên biển?',['A basket|Cái giỏ','A staff|Cây gậy','A net|Cái lưới'],1,'God told Moses to hold out his staff over the sea.|Chúa bảo Moses giơ cây gậy ra trên biển.']]},
+{t:'Mount Sinai|Núi Sinai',sky:'a8d8f8',gr:'c8b88a',w:'e8f0f8',o:1,k:2,e:'m',r:'Tablets 📜|Bảng đá 📜',
+n:[['aaron',8,-2,'We camped at the foot of Mount Sinai. God is calling Moses up the mountain!|Ta đóng trại dưới chân núi Sinai. Chúa gọi Moses lên núi!'],['miriam',-8,-2],['elder',8,-8],['kid',-8,-8]],
+q:[['Where did Moses receive the Ten Commandments?|Moses nhận Mười Điều Răn ở đâu?',['Mount Sinai|Núi Sinai','The Nile|Sông Nile','The palace|Cung điện'],0,'God gave Moses the commandments on Mount Sinai.|Chúa ban các điều răn cho Moses trên núi Sinai.'],
+['What were the Ten Commandments written on?|Mười Điều Răn được viết trên gì?',['Paper scrolls|Cuộn giấy','Stone tablets|Bảng đá','Sand|Cát'],1,'God gave Moses two stone tablets.|Chúa ban cho Moses hai bảng đá.']]}];
+
+/* ===== 3D SETUP ===== */
+const R=new THREE.WebGLRenderer({canvas:$('c'),antialias:false});R.setPixelRatio(Math.min(devicePixelRatio,2));
+const S=new THREE.Scene(),cam=new THREE.PerspectiveCamera(60,1,.1,200);
+S.add(new THREE.HemisphereLight(0xffffff,0x997755,.95));const sun=new THREE.DirectionalLight(0xffffff,.55);sun.position.set(5,10,6);S.add(sun);
+const rs=()=>{R.setSize(innerWidth,innerHeight);cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix()};addEventListener('resize',rs);rs();
+const M={},G={},mat=c=>M[c]||(M[c]=new THREE.MeshLambertMaterial({color:'#'+c}));
+const box=(w,h,d,c,x,y,z,p)=>{const k=w+','+h+','+d,m=new THREE.Mesh(G[k]||(G[k]=new THREE.BoxGeometry(w,h,d)),mat(c));m.position.set(x,y,z);p&&p.add(m);return m};
+const rn=n=>{const v=Math.sin(n*127.1)*43758.5;return v-Math.floor(v)};
+
+/* ===== BLOCKY PERSON FACTORY ===== */
+function person(k){const [sk,hr,tp,bt,h,hc,sc]=C[k],g=new THREE.Group();
+box(.5,.4,.3,tp,0,1.25,0,g);box(.58,.86,.36,bt,0,.62,0,g);box(.6,.1,.38,h==2?'c8a030':'6a4a28',0,1.04,0,g);
+box(.5,.5,.5,sk,0,1.7,0,g);box(.54,.14,.54,hr,0,1.94,0,g);
+box(.09,.09,.02,'222',-.12,1.72,.26,g);box(.09,.09,.02,'222',.12,1.72,.26,g);box(.16,.04,.02,'a33',0,1.58,.26,g);
+const lm=(x,y,col,l)=>{const p=new THREE.Group();p.position.set(x,y,0);box(.2,l,.2,col,0,-l/2+.05,0,p);if(l<.4)box(.22,.06,.3,'7a4a22',0,-l+.08,.04,p);g.add(p);return p};
+g.aL=lm(-.36,1.45,sk,.65);g.aR=lm(.36,1.45,sk,.65);g.lL=lm(-.14,.3,sk,.3);g.lR=lm(.14,.3,sk,.3);
+if(h){if(h==6)box(.55,.1,.55,hc,0,1.84,0,g);else{box(.6,.2,.6,hc,0,2.04,0,g);if(h!=3){box(.64,h==4?1:.6,.1,hc,0,h==4?1.55:1.75,-.29,g);if(h!=1){box(.1,.6,.4,hc,-.31,1.7,0,g);box(.1,.6,.4,hc,.31,1.7,0,g)}}}if(h==5)box(.4,.15,.4,'f2d04a',0,2.22,0,g)}
+if(['moses','jethro','shepherd','guard','captain'].includes(k))box(.08,1.7,.08,'6a4022',.5,.85,.25,g);
+g.scale.setScalar(sc);return g}
+function anim(g,t,mv,w){const s=mv?Math.sin(t*12)*.9:0;g.aL.rotation.x=s;g.aR.rotation.x=-s;g.lL.rotation.x=-s;g.lR.rotation.x=s;if(w){g.aR.rotation.x=0;g.aR.rotation.z=-2.6+Math.sin(t*9)*.4}else g.aR.rotation.z=0}
+
+/* ===== SOUND ===== */
+let ac;function beep(f,d=.15,tp='square'){if(!snd)return;try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain();o.type=tp;o.frequency.value=f;g.gain.value=.07;g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+d);o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+d)}catch(e){}}
+
+/* ===== WORLD / CHAPTER LOADER ===== */
+let W,P=[],N=[],fl=[],goal=null,cells={},cp=[0,.2,4],px=0,py=.2,pz=4,vy=0,ya=0,pt=.45,jx=0,jy=0;const K={};let pl;
+const plat=(x,t,z,w,d,col,h=1,f)=>{box(w,h,d,col,x,t-h/2,z,W);P.push({x,z,t,hw:w/2,hd:d/2,cp:f})};
+function load(i){ch=i;if(W)S.remove(W);W=new THREE.Group();S.add(W);P=[];N=[];fl=[];cl=[];gd=[];cf=[];cele=0;bm=0;$('bd').classList.add('hide');st=0;goal=null;const d=CH[i],e=d.e||'',big=!d.o;
+if(pl)S.remove(pl);pl=person(d.pc||'moses');S.add(pl);S.background=new THREE.Color('#'+d.sky);S.fog=new THREE.Fog('#'+d.sky,25,85);
+const gs=d.k!=null?26:18;plat(0,0,big?-12:0,big?70:gs,big?70:gs,d.gr);
+if(d.o)box(400,.4,400,d.w,0,-2.6,-60,W);
+if(e.includes('p'))for(let j=0;j<10;j++){const an=j*.63+i,r=(big?20:8)+(j%3)*(big?3:.4),x=Math.cos(an)*r,z=Math.sin(an)*r-(big?12:0);box(.5,2.6,.5,'8a5a2a',x,1.3,z,W);box(2.4,.3,2.4,'3a9a3a',x,2.8,z,W);box(1.2,.3,1.2,'4ab04a',x,3.1,z,W)}
+if(e.includes('y'))[[-30,-50],[22,-70]].forEach(p=>{const m=new THREE.Mesh(new THREE.ConeGeometry(14,14,4),mat('d9b56a'));m.position.set(p[0],5,p[1]);m.rotation.y=.78;W.add(m)});
+if(e.includes('c'))for(let j=0;j<3;j++){box(.8,4,.8,'efe2c0',-5,2,-2-j*3.5,W);box(.8,4,.8,'efe2c0',5,2,-2-j*3.5,W)}
+if(e.includes('n')){box(6,.08,60,'3b8fd0',-10,.04,-14,W);box(1,.3,.7,'c9a66b',-9,.2,-8,W)}
+if(e.includes('w')){box(5,7,60,'2e86d6',-7,2.5,-35,W);box(5,7,60,'2e86d6',7,2.5,-35,W)}
+if(e.includes('m'))[[-22,-30,12,20],[24,-50,14,26]].forEach(p=>{const m=new THREE.Mesh(new THREE.ConeGeometry(p[2],p[3],5),mat('8a7a68'));m.position.set(p[0],p[3]/2-2,p[1]);W.add(m)});
+if(e.includes('t'))[[-6,-8],[6,-8]].forEach(p=>{const m=new THREE.Mesh(new THREE.ConeGeometry(2,2.4,4),mat('c9a66b'));m.position.set(p[0],1.2,p[1]);W.add(m)});
+if(e.includes('b')){box(1.4,1,1.4,'3a7a2a',0,.5,-9,W);for(let j=0;j<5;j++)fl.push(box(.5,1.2,.5,j%2?'ff9a1f':'ffd23f',Math.cos(j*1.26)*.5,1.6,-9+Math.sin(j*1.26)*.5,W))}
+d.n.forEach((n,j)=>{const g=person(n[0]);g.position.set(n[1],0,n[2]);W.add(g);N.push({g,id:n[0],tx:n[3],gd:!j,ph:j})});
+for(let j=0;j<9;j++){const c=new THREE.Group();box(5,1,2.5,'ffffff',0,0,0,c);box(3,1,2,'ffffff',1.5,.7,.3,c);box(3,.8,2,'f4f8ff',-1.7,.4,-.3,c);c.position.set(-60+j*15,14+rn(j)*6,-10-rn(j+5)*60);W.add(c);cl.push(c)}
+for(let j=0;j<(d.gd||0);j++){const g=person('guard');W.add(g);gd.push({g,z:-j*7.5,sp:.8+j*.3,ph:j*2})}
+if(d.o){let x=0,y=0,z=-gs/2;const k=8+i;for(let j=0;j<k;j++){z-=3.4+rn(j+i)*.9;x=(rn(j*3+i)-.5)*3;y+=i==8?.45:i==6?.2:0;plat(x,y,z,2.4,2.4,j==k>>1?'4caf50':'c9a66b',.6,j==k>>1)}z-=4;plat(x,y,z,5,5,'ffd54f',.6);goal=[x,y+1.3,z]}
+if(d.s)goal=[d.s[0],1.3,d.s[1]];
+if(goal){const m=new THREE.Mesh(new THREE.OctahedronGeometry(.5),new THREE.MeshBasicMaterial({color:'#ffd54f'}));m.position.set(...goal);m.visible=false;W.add(m);goal=m}
+px=0;py=.2;pz=4;vy=0;ya=0;cp=[0,.2,4];hud();
+setTimeout(()=>play&&!busy&&talk(N[0]),700)}
+
+/* ===== DIALOGUE ===== */
+function say(L,cb){let i=0,tm=0,full='';const dt=$('dt'),type=()=>{clearInterval(tm);let k=0;full=T(L[i][1]);dt.textContent='';tm=setInterval(()=>{dt.textContent=full.slice(0,++k);if(k>=full.length)clearInterval(tm)},22)};
+const sh=()=>{const c=C[L[i][0]];$('dn').textContent=T(c[7]);$('av').style.background='#'+c[0];$('av').textContent=T(c[7])[0];$('dx').textContent=T('Next ▶|Tiếp ▶');type()};
+busy=1;$('dlg').classList.remove('hide');sh();
+$('dx').onclick=()=>{if(dt.textContent.length<full.length){clearInterval(tm);dt.textContent=full;return}beep(520,.06);if(++i<L.length)sh();else{$('dlg').classList.add('hide');busy=0;cb&&cb()}}}
+
+/* ===== QUIZ ===== */
+function quiz(list,k,cb){if(k>=list.length)return cb();const q=list[k],o=$('qo');busy=1;$('qz').classList.remove('hide');$('qq').textContent=T(q[0]);$('qe').textContent='';$('qn').classList.add('hide');o.innerHTML='';
+q[1].forEach((x,j)=>{const b=document.createElement('button');b.textContent=T(x);b.onclick=()=>{if(j==q[2]){beep(880,.2);stars++;hud();[...o.children].forEach(e=>e.disabled=1);$('qe').textContent='✅ '+T(q[3]);$('qn').textContent=T('Next ▶|Tiếp ▶');$('qn').classList.remove('hide');$('qn').onclick=()=>{$('qz').classList.add('hide');busy=0;quiz(list,k+1,cb)}}else{beep(200,.25,'sawtooth');b.disabled=1;$('qe').textContent=T('💡 Not quite! Think of the story and try again.|💡 Chưa đúng! Nhớ lại câu chuyện rồi thử lại nhé.')}};o.appendChild(b)})}
+
+/* ===== QUEST FLOW ===== */
+function talk(n){const g=n.gd&&st==0;say([[n.id,n.tx||C[n.id][8]]],()=>{if(g)quiz(CH[ch].q,0,()=>say([[CH[ch].n[0][0],'Great job! Now try the challenge. I believe in you!|Giỏi lắm! Giờ thử thách nhé, ta tin con!']],()=>puz(()=>CH[ch].k!=null?beginBuild():run())))})}
+function win(){if(st!=2)return;st=3;stars+=2;hud();beep(990,.3);cele=3;confetti(px,py+1.5,pz);const r=CH[ch].r.split('|'),g=CH[ch].n[0][0];sv(ch<8?ch+1:0);
+say([[g,'🎉 Chapter complete! ⭐+2 '+r[0]+'|🎉 Hoàn thành chương! ⭐+2 '+r[1]]],()=>{if(ch<8)load(ch+1);else say([['moses','🎉 You finished the journey! Total ⭐ '+stars+'|🎉 Bạn đã hoàn thành hành trình! Tổng ⭐ '+stars]],()=>{play=0;$('hud').classList.add('hide');$('menu').classList.remove('hide')})})}
+
+
+/* ===== CAMP BUILD SYSTEM (grid 9x9, cell 1.5, centre z=-3) ===== */
+const OT={tent:'Tent|Lều',basin:'Water basin|Bồn nước',fire:'Fire pit|Đống lửa',table:'Table|Bàn ăn',flag:'Flag pole|Cột cờ',tree:'Tree|Cây',rock:'Rock|Đá',path:'Path|Đường đi',gate:'Gate|Cổng',store:'Storage|Kho đồ',seat:'Seat|Chỗ ngồi'};
+const OI={tent:'⛺',basin:'💧',fire:'🔥',table:'🍽',flag:'🚩',tree:'🌴',rock:'🪨',path:'🟫',gate:'⛩',store:'📦',seat:'🪑'};
+const BLD=[{h:'Design a desert shelter camp for the Israelites|Thiết kế khu trú ẩn cho dân Israel ở sa mạc',g:[['tent',4],['basin',1,'tent'],['fire',1,'c'],['tree',2]]},
+{h:'Arrange the camp by the sea before moving on|Sắp xếp khu trại bên biển trước khi đi tiếp',g:[['gate',1],['path',3],['tent',3],['seat',2],['store',1]]},
+{h:'Prepare a gathering place below Mount Sinai|Chuẩn bị nơi tập hợp dưới chân núi Sinai',g:[['fire',1,'c'],['seat',4],['table',2],['flag',1]]}];
+const mk=f=>{const g=new THREE.Group();f(g);return g};
+const OBJ={
+tent:(a,b)=>mk(g=>{const m=new THREE.Mesh(new THREE.ConeGeometry(1.1,1.3,4),mat(a));m.position.y=.65;m.rotation.y=.78;g.add(m);box(.4,.6,.05,b,0,.3,.64,g)}),
+basin:(a,b)=>mk(g=>{box(.9,.4,.9,b,0,.2,0,g);box(.7,.1,.7,'3b8fd0',0,.4,0,g)}),
+fire:()=>mk(g=>{box(.9,.12,.9,'808078',0,.06,0,g);box(.3,.4,.3,'ff9a1f',0,.32,0,g);box(.2,.3,.2,'ffd23f',0,.4,0,g)}),
+table:(a,b)=>mk(g=>{box(1.1,.1,.7,a,0,.55,0,g);box(.1,.55,.6,b,-.45,.27,0,g);box(.1,.55,.6,b,.45,.27,0,g);box(.2,.12,.2,'c0392b',.2,.66,0,g)}),
+flag:()=>mk(g=>{box(.1,2,.1,'6a4022',0,1,0,g);box(.7,.45,.05,'3a6ea8',.4,1.7,0,g)}),
+tree:()=>mk(g=>{box(.3,1.8,.3,'8a5a2a',0,.9,0,g);box(1.4,.2,1.4,'3a9a3a',0,1.9,0,g);box(.7,.2,.7,'4ab04a',0,2.1,0,g)}),
+rock:()=>mk(g=>{box(.9,.5,.8,'8a8a80',0,.25,0,g);box(.5,.4,.5,'9a9a90',.2,.6,.1,g)}),
+path:()=>mk(g=>box(1.4,.06,1.4,'e8d49a',0,.03,0,g)),
+gate:(a,b)=>mk(g=>{box(.2,1.6,.2,b,-.6,.8,0,g);box(.2,1.6,.2,b,.6,.8,0,g);box(1.4,.2,.25,a,0,1.6,0,g)}),
+store:(a,b)=>mk(g=>{box(.9,.7,.9,a,0,.35,0,g);box(1,.12,1,b,0,.76,0,g)}),
+seat:a=>mk(g=>box(1,.3,.45,a,0,.2,0,g))};
+const MT=[['c9a66b','8a5a2a'],['e8e0d0','a08a60'],['9a6a4a','5a3a1a']],rc=new THREE.Raycaster(),pv=new THREE.Vector2();
+let bm=0,sel='tent',rot=0,mi=0,er=0,tv=0,bp=[],gridH;
+function chk(){return BLD[CH[ch].k].g.map(([t,n,nr])=>{let it=bp.filter(q=>q.t==t);if(nr=='c')it=it.filter(q=>Math.hypot(q.x,q.z)<=2);else if(nr){const o=bp.filter(q=>q.t==nr);it=it.filter(q=>o.some(w=>Math.hypot(q.x-w.x,q.z-w.z)<=2.3))}return [t,n,nr,it.length]})}
+function beginBuild(){bm=1;st=4;bp=[];sel='tent';rot=0;er=0;tv=0;gridH=new THREE.GridHelper(13.5,9,0xffffff,0xffffff);gridH.position.set(0,.06,-3);gridH.material.transparent=true;gridH.material.opacity=.45;W.add(gridH);$('bd').classList.remove('hide');bd();hud()}
+function bd(){const p=$('bd');p.innerHTML='';const ad=(t,f,on)=>{const b=document.createElement('button');b.textContent=t;if(on)b.className='on';b.onclick=f;p.appendChild(b)};
+Object.keys(OT).forEach(k=>ad(OI[k],()=>{sel=k;er=0;bd()},sel==k&&!er));
+ad('↻ '+T('Rotate|Xoay'),()=>{rot=(rot+1)%4;bd()});ad('🎨 '+T('Material|Vật liệu'),()=>{mi=(mi+1)%3;bd()});ad('↩ '+T('Undo|Hoàn tác'),undo);ad('🗑 '+T('Erase|Xóa'),()=>{er=!er;bd()},er);ad('👁 '+T('Top view|Nhìn từ trên'),()=>{tv=!tv;bd()},tv);ad('✔ '+T('Done|Hoàn thành'),done);
+const n=document.createElement('div');n.style.cssText='font-size:14px;margin-top:4px';n.textContent=(er?'🗑 ':OI[sel]+' ')+T(er?'Tap an object to erase|Chạm vào vật để xóa':OT[sel])+' — '+T('Creative activity, not stated in the Bible|Hoạt động sáng tạo, không được nói rõ trong Kinh Thánh');p.appendChild(n)}
+function tap(e){const r=cv.getBoundingClientRect();pv.set((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1);rc.setFromCamera(pv,cam);const o=rc.ray.origin,d=rc.ray.direction,t=-o.y/d.y;if(!(t>0))return;
+const gx=Math.round((o.x+d.x*t)/1.5),gz=Math.round((o.z+d.z*t+3)/1.5);if(Math.abs(gx)>4||Math.abs(gz)>4)return;const i=bp.findIndex(q=>q.x==gx&&q.z==gz);
+if(er){if(i>=0){W.remove(bp[i].m);bp.splice(i,1);beep(300,.1);hud()}return}
+if(i>=0){beep(200,.15,'sawtooth');return}
+const g=OBJ[sel](MT[mi][0],MT[mi][1]);g.position.set(gx*1.5,0,gz*1.5-3);g.rotation.y=rot*Math.PI/2;W.add(g);bp.push({t:sel,x:gx,z:gz,m:g});beep(500,.08);hud()}
+function undo(){const q=bp.pop();if(q){W.remove(q.m);beep(300,.1);hud()}}
+function done(){if(chk().every(x=>x[3]>=x[1])){bm=0;$('bd').classList.add('hide');W.remove(gridH);beep(990,.25);cele=2.5;confetti(0,3,-3);say([[CH[ch].n[0][0],'The camp looks wonderful! Everyone is safe and happy.|Khu trại thật tuyệt! Mọi người đều bình an và vui vẻ.']],run)}else{beep(200,.2,'sawtooth');hud();$('obj').textContent+='\n💡 '+T('Check the goals ✓|Xem lại các mục tiêu ✓')}}
+function run(){st=2;if(goal)goal.visible=true;else win();hud()}
+
+/* ===== EXTRAS: clouds, dust particles, confetti, order puzzles, guard patrol ===== */
+let cl=[],gd=[],cf=[],cele=0;const PN=120,pa=new Float32Array(PN*3);
+for(let i=0;i<PN;i++){pa[i*3]=(Math.random()-.5)*30;pa[i*3+1]=Math.random()*8;pa[i*3+2]=(Math.random()-.5)*30}
+const pg=new THREE.BufferGeometry();pg.setAttribute('position',new THREE.BufferAttribute(pa,3));
+const pts=new THREE.Points(pg,new THREE.PointsMaterial({color:0xfff2c0,size:.14,transparent:true,opacity:.75}));pts.frustumCulled=false;S.add(pts);
+const toast=t=>{$('obj').textContent=t;setTimeout(hud,1800)};
+function confetti(x,y,z){for(let i=0;i<40;i++){const m=box(.14,.14,.04,['ff5a5a','ffd23f','5ad07a','5aa0ff','ff8ad8'][i%5],x,y,z,W);cf.push({m,v:new THREE.Vector3((Math.random()-.5)*6,Math.random()*6+2,(Math.random()-.5)*6),l:2})}}
+function fx(dt,t){cl.forEach(c=>{c.position.x+=dt*.8;if(c.position.x>70)c.position.x=-70});
+for(let i=0;i<PN;i++){pa[i*3]+=dt*.8;if(pa[i*3]>15)pa[i*3]=-15;pa[i*3+1]+=Math.sin(t+i)*dt*.3}pg.attributes.position.needsUpdate=true;pts.position.set(px,py,pz);
+cf=cf.filter(c=>{c.v.y-=9*dt;c.m.position.addScaledVector(c.v,dt);c.m.rotation.x+=dt*5;if((c.l-=dt)<0){W.remove(c.m);return false}return true});
+if(cele>0){cele-=dt;pl.aL.rotation.z=2.6;pl.aR.rotation.z=-2.6;pl.position.y=py+Math.abs(Math.sin(t*10))*.4;N.forEach(n=>{n.g.aL.rotation.z=2.6;n.g.aR.rotation.z=-2.6;n.g.position.y=Math.abs(Math.sin(t*8+n.ph))*.3})}else if(cele>-.5){cele=-1;N.forEach(n=>n.g.position.y=0)}
+gd.forEach(q=>{const a=t*q.sp+q.ph,x=Math.sin(a)*6;q.g.position.set(x,0,q.z);q.g.rotation.y=Math.cos(a)>0?1.57:-1.57;anim(q.g,t,1,0);if(st==2&&Math.hypot(px-x,pz-q.z)<1.2&&py<1){beep(200,.3,'sawtooth');px=0;pz=4;py=.2;vy=0;toast('😅 '+T('The guards saw you! Try again, nice and gently.|Lính gác thấy bạn! Thử lại nhé, nhẹ nhàng thôi.'))}})}
+const PZ={0:['Jochebed puts baby Moses in a basket by the river|Jochebed đặt em bé Moses vào giỏ bên sông','Miriam watches from far away|Miriam canh chừng từ xa','Pharaoh’s daughter finds the baby|Con gái Pharaoh tìm thấy em bé','She names him Moses|Bà đặt tên em là Moses'],
+7:['The Israelites camp by the sea|Dân Israel đóng trại bên biển','Moses holds out his staff|Moses giơ cây gậy ra','God makes a path through the sea|Chúa mở lối đi giữa biển','The people walk across on dry ground|Dân sự đi qua trên đất khô'],
+8:['The Israelites camp at Mount Sinai|Dân Israel đóng trại ở núi Sinai','Moses goes up the mountain|Moses lên núi','God gives the Ten Commandments|Chúa ban Mười Điều Răn','Moses receives two stone tablets|Moses nhận hai bảng đá']};
+function puz(cb){const z=PZ[ch];if(!z)return cb();busy=1;$('qz').classList.remove('hide');$('qq').textContent=T('🧩 Tap the events in the right order!|🧩 Chạm các sự kiện theo đúng thứ tự!');$('qe').textContent='';$('qn').classList.add('hide');const o=$('qo');o.innerHTML='';let n=0;
+z.map((t,i)=>[t,i]).sort(()=>Math.random()-.5).forEach(([t,i])=>{const b=document.createElement('button');b.textContent=T(t);b.onclick=()=>{if(i==n){n++;b.disabled=1;b.style.background='#7bd88f';beep(600+n*80,.1);if(n==z.length){stars++;hud();beep(990,.25);$('qe').textContent='✅ '+T('Well done! That is how the story goes.|Giỏi lắm! Câu chuyện diễn ra đúng như vậy.');$('qn').textContent=T('Next ▶|Tiếp ▶');$('qn').classList.remove('hide');$('qn').onclick=()=>{$('qz').classList.add('hide');busy=0;cb()}}}else{beep(200,.2,'sawtooth');$('qe').textContent=T('💡 Not yet! Think about what happened first.|💡 Chưa đúng! Hãy nghĩ điều gì xảy ra trước.')}};o.appendChild(b)})}
+
+/* ===== GAME LOOP ===== */
+function step(dt,t){
+let ix=(K.d||K.ArrowRight?1:0)-(K.a||K.ArrowLeft?1:0)+jx,iy=(K.w||K.ArrowUp?1:0)-(K.s||K.ArrowDown?1:0)+jy,m=Math.hypot(ix,iy),mv=0;
+if(!busy&&!bm&&m>.1){const n=Math.min(m,1)/m;ix*=n;iy*=n;const s=Math.sin(ya),c=Math.cos(ya),vx=-s*iy+c*ix,vz=-c*iy-s*ix;px+=vx*6*dt;pz+=vz*6*dt;pl.rotation.y=Math.atan2(vx,vz);mv=1}
+if(JP&&on&&!busy){vy=8.5;JP=0;beep(660,.08)}
+vy-=24*dt;let ny=py+vy*dt;on=0;
+for(const q of P)if(Math.abs(px-q.x)<q.hw+.25&&Math.abs(pz-q.z)<q.hd+.25&&py>=q.t-.4&&ny<=q.t&&vy<=0){ny=q.t;vy=0;on=1;if(q.cp)cp=[q.x,q.t+.2,q.z]}
+py=ny;if(py<-4){[px,py,pz]=cp;vy=0;beep(150,.3,'sawtooth')}
+pl.position.set(px,py,pz);anim(pl,t,mv&&on,0);
+if(bm){cam.position.set(0,tv?22:15,tv?.5:7);cam.lookAt(0,0,0)}else{const D=7,cs=Math.cos(pt);cam.position.set(px+Math.sin(ya)*D*cs,py+1.6+D*Math.sin(pt),pz+Math.cos(ya)*D*cs);cam.lookAt(px,py+1.4,pz)}
+near=null;let nd=3;N.forEach(n=>{const dx=px-n.g.position.x,dz=pz-n.g.position.z,dd=Math.hypot(dx,dz);if(dd<5)n.g.rotation.y=Math.atan2(dx,dz);if(dd<nd){nd=dd;near=n}anim(n.g,t+n.ph,0,dd<4)});
+$('bt').classList.toggle('hide',!near||busy||bm);$('br').classList.toggle('hide',!(st==2&&CH[ch].o));
+fl.forEach((f,j)=>f.scale.y=1+.4*Math.sin(t*9+j));fx(dt,t);
+if(goal&&st==2){goal.rotation.y=t*2;if(Math.hypot(px-goal.position.x,py+.8-goal.position.y,pz-goal.position.z)<1.7)win()}}
+let last=0;function loop(t){requestAnimationFrame(loop);const dt=Math.min((t-last)/1000,.05);last=t;if(play&&!pause&&W)step(dt,t/1000);R.render(S,cam)}
+
+/* ===== UI, INPUT, SAVE, I18N ===== */
+function hud(){$('sb').textContent='⭐'+stars;if(!play)return;const d=CH[ch];let o=T('Chapter|Chương')+' '+(ch+1)+'/9: '+T(d.t)+'\n';
+o+=st==0?'🎯 '+T('Talk to|Nói chuyện với')+' '+T(C[d.n[0][0]][7]):st==2?T('🎯 Reach the golden star!|🎯 Chạm vào ngôi sao vàng!')+(d.gd?'\n'+T('Slip past the guards (creative activity)|Né các lính gác (hoạt động sáng tạo)'):''):st==4?'🏕 '+T(BLD[d.k].h)+'\n'+chk().map(x=>(x[3]>=x[1]?'✅ ':'⬜ ')+T(OT[x[0]])+' '+x[3]+'/'+x[1]+(x[2]=='c'?T(' (center)| (ở giữa)'):x[2]?T(' (near |, gần ')+T(OT[x[2]])+')':'')).join('\n'):'✅';$('obj').textContent=o}
+function ui(){document.documentElement.lang=lang?'vi':'en';document.querySelectorAll('[data-t]').forEach(e=>e.textContent=T(e.dataset.t));$('bt').textContent=T('💬 Talk|💬 Nói');$('br').textContent=T('🔄 Retry|🔄 Thử lại');$('bl').textContent=$('bl2').textContent=lang?'🌐 VI':'🌐 EN';$('bn').textContent=$('bn2').textContent=snd?'🔊':'🔇';hud()}
+const sv=n=>{try{localStorage.setItem('mos',JSON.stringify({ch:n,stars}))}catch(e){}};
+let s0;try{s0=JSON.parse(localStorage.getItem('mos'))}catch(e){}if(s0)$('bc').classList.remove('hide');
+function start(n,s){stars=s;play=1;$('menu').classList.add('hide');$('hud').classList.remove('hide');load(n);ui()}
+const tg=()=>{lang=1-lang;ui()},ts=()=>{snd=1-snd;ui()},jump=()=>{JP=1;setTimeout(()=>JP=0,160)};
+$('bs').onclick=()=>start(0,0);$('bc').onclick=()=>start(s0.ch||0,s0.stars||0);$('bh').onclick=()=>$('how').classList.toggle('hide');
+$('bl').onclick=$('bl2').onclick=tg;$('bn').onclick=$('bn2').onclick=ts;
+$('bf').onclick=()=>{try{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}catch(e){}};
+$('bp').onclick=()=>{pause=1-pause;$('bp').textContent=pause?'▶':'⏸'};
+$('bj').onpointerdown=jump;$('bt').onclick=()=>near&&!busy&&talk(near);$('br').onclick=()=>{[px,py,pz]=cp;vy=0};
+const cv=$('c');let dr=null;cv.onpointerdown=e=>{if(bm){tap(e);return}dr=[e.clientX,e.clientY];cv.setPointerCapture(e.pointerId)};
+cv.onpointermove=e=>{if(dr){ya-=(e.clientX-dr[0])*.008;pt=Math.max(.1,Math.min(1.1,pt+(e.clientY-dr[1])*.006));dr=[e.clientX,e.clientY]}};cv.onpointerup=cv.onpointercancel=()=>dr=null;
+const js=$('js'),jm=e=>{const r=js.getBoundingClientRect();let dx=e.clientX-r.left-65,dy=e.clientY-r.top-65;const l=Math.hypot(dx,dy);if(l>50){dx*=50/l;dy*=50/l}$('kn').style.transform='translate('+dx+'px,'+dy+'px)';jx=dx/50;jy=-dy/50};
+js.onpointerdown=e=>{js.setPointerCapture(e.pointerId);jm(e)};js.onpointermove=e=>{if(js.hasPointerCapture(e.pointerId))jm(e)};js.onpointerup=js.onpointercancel=()=>{jx=jy=0;$('kn').style.transform=''};
+const kn=e=>e.key.length>1?e.key:e.key.toLowerCase();
+onkeydown=e=>{const k=kn(e);K[k]=1;if(k==' ')jump();if(k=='e'&&near&&!busy&&play)talk(near);if(k==' '||k.startsWith('Arrow'))e.preventDefault()};onkeyup=e=>K[kn(e)]=0;
+document.addEventListener('touchmove',e=>{if(!e.target.closest('#bd'))e.preventDefault()},{passive:false});
+load(0);ui();$('ld').classList.add('hide');$('menu').classList.remove('hide');requestAnimationFrame(loop);
+})();
+</script></body></html>
